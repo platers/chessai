@@ -1,6 +1,6 @@
 var board,
   game = new Chess();
-//  console.log(game.load('8/3qqk2/8/8/8/2Q5/3K4/8 w - - 1 45')); //test endgame
+  console.log(game.load('5n2/2krpp1p/1q1p4/8/8/8/4K3/8 w - - 1 45')); //test endgame
 console.log(game.fen())
 var dp = {};
 // do not pick up pieces if the game is over
@@ -31,6 +31,7 @@ function shuffle(a) {
 }
 var makeMove = function() {
   console.log("Thinking");
+    console.log(evaluateBoard(game));
   var moves = game.moves();
 
   // game over
@@ -39,7 +40,9 @@ var makeMove = function() {
   var move = -1, best = -9999999;
   for(var i = 0; i < moves.length; i++){
     game.move(moves[i]);
-    var val = minimax(game, 2, false);
+    var val = 0;
+    if(pieceCount(game.board()) < 12) val = minimax(game, 3, false);
+    else val = minimax(game, 2, false);
     game.undo();
     if(val > best){
       best = val;
@@ -47,6 +50,7 @@ var makeMove = function() {
     }
   }
   console.log("Branching factor: " + moves.length);
+  console.log("Value: " + best)
   game.move(moves[move]);
   board.position(game.fen());
 };
@@ -125,14 +129,20 @@ var minimax = function(game, depth, alpha, beta, maximizingPlayer){
 }
 
 var evaluateBoard = function (game) {
+  var totalEvaluation = 0;
   var board = game.board();
   if(game.in_draw() || game.in_stalemate()){
     return -50;
   }
-  if(game.in_checkmate()) totalEvaluation += 99999;
-  if(game.in_check()) totalEvaluation += 1;
+  if(game.in_checkmate()){
+    totalEvaluation += 99999;
+    console.log("Mate")
+  }
+  if(game.in_check()){
+    totalEvaluation += 1;
+    //console.log("Check");
+  }
   if(game.turn() == 'b') totalEvaluation *= -1;
-    var totalEvaluation = 0;
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 8; j++) {
             totalEvaluation = totalEvaluation + getPieceValue(board[i][j]);
@@ -140,7 +150,15 @@ var evaluateBoard = function (game) {
     }
     return totalEvaluation;
 };
-
+var pieceCount = function (board) {
+  var c = 0;
+  for (var i = 0; i < 8; i++) {
+      for (var j = 0; j < 8; j++) {
+          if(board[i][j]) c++;
+      }
+  }
+  return c;
+}
 var getPieceValue = function (piece) {
     if (piece === null) {
         return 0;
