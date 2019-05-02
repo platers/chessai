@@ -75,7 +75,7 @@ var realMakeMove = function(){
       }
     });
   });
-  url = new URL('http://tablebase.lichess.ovh/standard'), //closing book
+  url = new URL('https://tablebase.lichess.ovh/standard'), //closing book
     params = {
       fen: game.fen()
     };
