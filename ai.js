@@ -1,6 +1,6 @@
 var board,
   game = new Chess();
-  console.log(game.load('5n2/2krpp1p/1q1p4/8/8/8/4K3/8 w - - 1 45')); //test endgame
+  //console.log(game.load('5n2/2krpp1p/1q1p4/8/8/8/4K3/8 w - - 1 45')); //test endgame
 console.log(game.fen())
 var dp = {};
 // do not pick up pieces if the game is over
